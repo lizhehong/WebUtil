@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--创建时间：2015年3月31日 -->
+<!DOCTYPE struts PUBLIC
+	"-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+	"http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+	<constant name="struts.multipart.saveDir" value="/tmp" />
+	<package name="ITHong" extends="struts-default">
+		<action name="*User" method="{1}" class="cn.ITHong.domain.User">
+			<result name="listOk">/listUser.jsp</result>
+			<result name="queryConditionOk">/listUser.jsp</result>
+			<result name="input">/{1}User.jsp</result>
+			<result name="addOk">/index.jsp </result>
+			<result name="delOk">/index.jsp </result>
+			<result name="editUIOk">/editUI.jsp </result>
+			<result name = "editOk">/index.jsp</result>
+		</action>
+	</package>
+</struts>
