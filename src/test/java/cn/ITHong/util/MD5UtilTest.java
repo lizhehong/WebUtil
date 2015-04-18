@@ -8,7 +8,9 @@ public class MD5UtilTest {
 
 	@Test
 	public void test() {
-		System.out.println(MD5Util.encode("a8922993"));;
+		System.out.println(StringUtil.encode("a8922993"));
+
+		System.out.println(StringUtil.decode("YTg5MjI5OTM="));
 	}
 
 }

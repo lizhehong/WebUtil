@@ -10,7 +10,7 @@ import org.junit.Test;
 
 import cn.ITHong.dao.UserDao;
 import cn.ITHong.domain.User;
-import cn.ITHong.util.MD5Util;
+import cn.ITHong.util.StringUtil;
 
 public class UserDaoImplTest {
 	private UserDao dao = new UserDaoImpl();
@@ -56,7 +56,7 @@ public class UserDaoImplTest {
 		user.setFilename("测试");
 		user.setId(UUID.randomUUID().toString());
 		user.setNick("hong");
-		user.setPassword(MD5Util.encode("1234"));
+		user.setPassword(StringUtil.encode("1234"));
 		user.setPath("/a/a/a");
 		user.setRemark("测试专用");
 		user.setSex("0");

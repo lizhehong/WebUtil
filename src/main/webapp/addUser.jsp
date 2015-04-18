@@ -8,7 +8,7 @@
 <title>添加用户</title>
 </head>
 <body>
-	<s:form action="addUser" enctype="multipart/form-data" method="post">
+	<s:form action="signIn" enctype="multipart/form-data" method="post">
 
 		<s:textfield name="username" label="用户名" />
 		<s:password name="password" label="密码" />

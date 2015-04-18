@@ -51,9 +51,12 @@
 							<s:url action="editUIUser" var="url">
 								<s:param name="userId" value="#user.id" />
 							</s:url>
-							<a href='<s:property value="url"/>'>编辑</a>
+							<a href='<s:property value="url"/>'>修改</a>
 							</td>
-							<td>查看</td>
+							<td>	<s:url action="checkUser" var="url">
+								<s:param name="userId" value="#user.id" />
+							</s:url>
+							<a href='<s:property value="url"/>'>查看</a></td>
 							<td><s:url action="delUser" var="url">
 									<s:param name="userId" value="#user.id" />
 								</s:url>

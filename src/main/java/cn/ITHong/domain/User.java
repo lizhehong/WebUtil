@@ -1,18 +1,25 @@
 package cn.ITHong.domain;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.Serializable;
+import java.io.UnsupportedEncodingException;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
+
+import javax.servlet.http.HttpSession;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.struts2.ServletActionContext;
 
 import cn.ITHong.service.UserService;
 import cn.ITHong.service.impl.UserServiceImpl;
+import cn.ITHong.util.StringUtil;
 import cn.ITHong.util.WebUtil;
 
 import com.opensymphony.xwork2.ActionContext;
@@ -32,9 +39,20 @@ public class User extends ActionSupport implements Serializable {
 	private String path;
 	private String filename;// 存的文件名 uuid_oldfilename
 	private String remark;// 简介
+	// 文件上传
 	private File image;
 	private String imageFileName;
 	private String imageContentType;
+	// 文件下载
+	private InputStream inputStream;
+
+	public InputStream getInputStream() {
+		return inputStream;
+	}
+
+	public void setInputStream(InputStream inputStream) {
+		this.inputStream = inputStream;
+	}
 
 	public File getImage() {
 		return image;
@@ -176,7 +194,7 @@ public class User extends ActionSupport implements Serializable {
 		// 单独出来hobby
 		if (hobbies != null && hobbies.length > 0) {
 			StringBuffer sb = new StringBuffer();
-			//讲hobbies的数组改写成能存入数据库的hobby字符串(用","分割)
+			// 讲hobbies的数组改写成能存入数据库的hobby字符串(用","分割)
 			for (int i = 0; i < hobbies.length; i++) {
 				if (i > 0)
 					sb.append(",");
@@ -231,7 +249,7 @@ public class User extends ActionSupport implements Serializable {
 		// 单独出来hobby
 		if (hobbies != null && hobbies.length > 0) {
 			StringBuffer sb = new StringBuffer();
-			//讲hobbies的数组改写成能存入数据库的hobby字符串(用","分割)
+			// 讲hobbies的数组改写成能存入数据库的hobby字符串(用","分割)
 			for (int i = 0; i < hobbies.length; i++) {
 				if (i > 0)
 					sb.append(",");
@@ -256,6 +274,49 @@ public class User extends ActionSupport implements Serializable {
 		}
 		s.updateUser(this);
 		return "editOk";
+	}
+
+	public String check() {
+		String userId = ServletActionContext.getRequest()
+				.getParameter("userId");
+		User user = s.findUserById(userId);
+		user.setHobbies(user.getHobby().split(","));
+		ActionContext.getContext().put("user", user);
+		return "checkOk";
+	}
+
+	public String dowmImg() {
+		// 文件路徑
+		path = ServletActionContext.getRequest().getParameter("path");
+		// 文件名
+		filename = ServletActionContext.getRequest().getParameter("filename");
+		String storePah = ServletActionContext.getServletContext().getRealPath(
+				"/files");
+		try {
+			System.out.println(storePah + "\\" + path + "\\" + filename);
+			inputStream = new FileInputStream(storePah + "\\" + path + "\\"
+					+ filename);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			addFieldError("message", "文件不存在");
+			return "dowmError";
+		}
+		return SUCCESS;
+	}
+
+	public String login() {
+		System.out.println(username + ":" + password);
+		User user = s.login(username, password);
+		StringUtil.decode(password);
+		if (user != null) {
+			HttpSession session = ServletActionContext.getRequest()
+					.getSession();
+			session.setAttribute("user", user);
+			return SUCCESS;
+		} else {
+			return "login";
+		}
+
 	}
 
 	@Override

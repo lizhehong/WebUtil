@@ -5,15 +5,46 @@
 	"http://struts.apache.org/dtds/struts-2.3.dtd">
 <struts>
 	<constant name="struts.multipart.saveDir" value="/tmp" />
-	<package name="ITHong" extends="struts-default">
+	<package name="mydefault" extends="struts-default">
+		<interceptors>
+			<interceptor name="PermissionInterceptor"
+				class="cn.ITHong.interception.PermissionInterceptor"></interceptor>
+			<interceptor-stack name="mydefaultstack">
+				<interceptor-ref name="defaultStack" />
+				<interceptor-ref name="PermissionInterceptor" />
+			</interceptor-stack>
+		</interceptors>
+	</package>
+	<package name="ITHong" extends="mydefault">
+		<action name="login" class="cn.ITHong.domain.User" method="login">
+			<result name="success">/index.jsp</result>
+			<result name="input">/login.jsp</result>
+		</action>
+		<action name="signIn" class="cn.ITHong.domain.User" method="add">
+			<result name="addOk">/index.jsp </result>
+			<result name="input">/addUser.jsp</result>
+		</action>
 		<action name="*User" method="{1}" class="cn.ITHong.domain.User">
+			<interceptor-ref name="mydefaultstack" />
 			<result name="listOk">/listUser.jsp</result>
 			<result name="queryConditionOk">/listUser.jsp</result>
 			<result name="input">/{1}User.jsp</result>
-			<result name="addOk">/index.jsp </result>
 			<result name="delOk">/index.jsp </result>
 			<result name="editUIOk">/editUI.jsp </result>
-			<result name = "editOk">/index.jsp</result>
+			<result name="editOk">/index.jsp</result>
+			<result name="checkOk">/checkUser.jsp</result>
+			<result name="login">/login.jsp</result>
+		</action>
+		<action name="dowmloadUserImg" class="cn.ITHong.domain.User"
+			method="dowmImg">
+			<interceptor-ref name="mydefaultstack" />
+			<result type="stream">
+				<param name="inputStream">inputStream</param><!-- 輸入時對應的動作類中的那個字段 -->
+				<param name="contentType">application/octet-stream</param>
+				<param name="contentDisposition">attachment;filename=${filename}</param><!-- 要下載的文件名 -->
+			</result>
+			<result name="dowmError">/message.jsp</result>
+			<result name="login">/login.jsp</result>
 		</action>
 	</package>
 </struts>

@@ -17,5 +17,9 @@ public interface UserService {
 	User findUserById(String userId);
 
 	void updateUser(User user);
+	/**
+	 * @return 找不到 则返回空 找到返回对象
+	 * */
+	User login(String username, String password);
 	
 }

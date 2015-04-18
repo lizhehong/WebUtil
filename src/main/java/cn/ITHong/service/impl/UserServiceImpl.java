@@ -7,7 +7,7 @@ import cn.ITHong.dao.UserDao;
 import cn.ITHong.dao.impl.UserDaoImpl;
 import cn.ITHong.domain.User;
 import cn.ITHong.service.UserService;
-import cn.ITHong.util.MD5Util;
+import cn.ITHong.util.StringUtil;
 
 public class UserServiceImpl implements UserService {
 	private UserDao udao = new UserDaoImpl();
@@ -19,7 +19,7 @@ public class UserServiceImpl implements UserService {
 
 	public void addUser(User user) {
 		user.setId(UUID.randomUUID().toString());
-		user.setPassword(MD5Util.encode(user.getPassword()));
+		user.setPassword(StringUtil.encode(user.getPassword()));
 		udao.addUser(user);
 	}
 
@@ -31,7 +31,7 @@ public class UserServiceImpl implements UserService {
 
 		if (user.getUsername() != null && !user.getUsername().equals("")) {
 			ok1 = false;
-			//%%是为了能一个一个子匹配
+			// %%是为了能一个一个子匹配
 			sb.append(" and username like '%" + user.getUsername() + "%' ");
 		}
 
@@ -46,32 +46,44 @@ public class UserServiceImpl implements UserService {
 		}
 		boolean conditionOk = ok1 && ok2 && ok3;// 如果为false,说明至少有一个查询条件
 		if (conditionOk) {
-//			System.out.println("沒有查询条件");
-//			return null;
-			//默认返回全部
-			 return udao.findUserByCondition(null);
+			// System.out.println("沒有查询条件");
+			// return null;
+			// 默认返回全部
+			return udao.findUserByCondition(null);
 		} else {
-//			System.out.println("有查询条件");
-//			System.out.println(sb.toString());
-//			return null;
-			 return udao.findUserByCondition(sb.toString());
+			// System.out.println("有查询条件");
+			// System.out.println(sb.toString());
+			// return null;
+			return udao.findUserByCondition(sb.toString());
 		}
 	}
 
 	public void delUser(String userId) {
 		udao.deleteUser(userId);
-		
+
 	}
 
 	public User findUserById(String userId) {
-		
+
 		return udao.findUserById(userId);
 	}
 
 	public void updateUser(User user) {
-		user.setPassword(MD5Util.encode(user.getPassword()));
+		user.setPassword(StringUtil.encode(user.getPassword()));
 		udao.updateUser(user);
-		
+
+	}
+
+	public User login(String username, String password) {
+		password = StringUtil.encode(password);
+		List<User> users = udao.findUserByCondition("where username='"
+				+ username + "'" + "and password='" + password + "'");
+		if (users != null && users.size() == 1) {
+			return users.get(0);
+		} else {
+			return null;
+		}
+
 	}
 
 }
